@@ -45,7 +45,7 @@ In the Results @sec-results section of this paper, I will go through the conclus
 
 # Data {#sec-data}
 
-The analysis for this project was done using R programming language [@citeR], and multiple libraries were used within R to help with tasks such as plotting graphs, data cleaning and manipulation. In particular, the opendatatoronto library [@opendatatoronto] was used for acquiring the dataset off of Open Data Toronto's servers, janitor [@janitor], tidyverse [@tidyverse] and dplyr [@dplyr] were used for cleaning, manipulating and testing the dataset, and ggplot2 [@ggplot2] was used for creating plots and graphs shown in the analysis. The details of how data collection, cleaning and analysis was done can be found below.
+The analysis for this project was done using R programming language [@citeR], and multiple libraries were used within R to help with tasks such as plotting graphs, data cleaning and manipulation. In particular, the opendatatoronto library [@opendatatoronto] was used for acquiring the dataset off of Open Data Toronto's servers, here library [@here] was used for loading in data from the local project files, janitor [@janitor], tidyverse [@tidyverse], reshape2[@reshape2] and dplyr [@dplyr] were used for cleaning, manipulating and testing the dataset, and ggplot2 [@ggplot2] along with knitr[@knitr] was used for creating plots and graphs shown in the analysis. The details of how data collection, cleaning and analysis was done can be found below.
 
 ## Data Collection {#subsec-data-collect}
 
