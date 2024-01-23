@@ -1,12 +1,12 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Analyzing Violent Crime Statistics in Toronto Neighbourhoods"
+subtitle: "Exploring how violent crime rates vary in neighbourhoods of a city"
 author: 
   - Hritik Shukla
 thanks: "Code and data are available at: https://github.com/hritikshuklas/toronto-neighbourhood-crimes"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "The City of Toronto has made crime statistics for each of its neighbourhoods publicly available through it's Open Data Program. This data will be analyzed to observe how violent crime rates are distributed amongst the neighbourhoods of the city. A trend has been observed where a small number of neighbourhoods exhibit a larger crime rate than the majority of other neighbourhoods. However, these distributions vary from crime to crime."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -18,39 +18,177 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(dplyr)
+library(here)
+library(knitr)
+library(ggplot2)
+library(reshape2)
+
+cleaned_data <- read_csv(file=here("outputs/data/cleaned_data.csv"))
+num_data <- cleaned_data |> select(-c(id, area_name))
+
+# Helper function to wrap plot titles
+# Ref: https://stackoverflow.com/a/3935429
+wrapper <- function(x, ...) 
+{
+  paste(strwrap(x, ...), collapse = "\n")
+}
 ```
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections.
+While we read about rising and falling crime rates in the cities we live in, we don't know if these crime rates affect every person equally. It could be the case that these crime occurrences are distributed evenly throughout the city, where every person living in different parts of the city has the same probability of being a victim of a crime. However, it could also be the case that not every person will run into these crimes in their day to day life, and this probability will be heavily influenced by where they live. The aim of this paper is to explore if all neighbourhoods of Toronto follow the general trends of rise and fall in violent crimes, or are there variances between neighbourhoods.
 
-The remainder of this paper is structured as follows. @sec-data....
+In the Data @sec-data section of this paper, I will go through the dataset used for this analysis in detail, covering the source of the data, the different features present in the data and the variables of interest to us.
+
+In the Results @sec-results section of this paper, I will go through the conclusions I derived, supporting my arguments with plots and data generated from the data acquired above, with the help of various libraries in R. 
 
 # Data {#sec-data}
 
-The analysis for this project was done using R programming language [@citeR], and multiple libraries were used within R to help with tasks such as plotting graphs, data cleaning and manipulation. In particular, the opendatatoronto library [@opendatatoronto] was used for acquiring the dataset off of Open Data Toronto's servers, janitor [@janitor], tidyverse [@tidyverse] and dplyr [@dplyr] were used for cleaning, manipulating and testing the dataset, and ggplot2 [@ggplot2] was used for creating plots and graphs shown in the analysis.
+The analysis for this project was done using R programming language [@citeR], and multiple libraries were used within R to help with tasks such as plotting graphs, data cleaning and manipulation. In particular, the opendatatoronto library [@opendatatoronto] was used for acquiring the dataset off of Open Data Toronto's servers, janitor [@janitor], tidyverse [@tidyverse] and dplyr [@dplyr] were used for cleaning, manipulating and testing the dataset, and ggplot2 [@ggplot2] was used for creating plots and graphs shown in the analysis. The details of how data collection, cleaning and analysis was done can be found below.
 
-## Data Features ##
+## Data Collection {#subsec-data-collect}
 
-The data contains crime data for all 158 neighborhoods of Toronto, from the year 2014 to the year 2023. The data includes counts for individual categories of crimes, such as assault, auto theft, break and entering, robbery, homicide, theft over ($5000), shooting and firearm discharges. The data also includes the crime rate for each of these categories, calculated as crimes committed per 100,000 population. These crime rates were calculated using population estimates for each neighborhood in 2023, which were provided by Environics Analytics.
+The data used for this paper is published by Toronto Police Services under the Open Government License for the City of Toronto. The data was acquired from the City of Toronto's open data portal through the opendatatoronto library [@opendatatoronto] and saved locally for further processing. .
 
-## Data Collection ##
+## Data Features {#subsec-data-features}
 
-# Results
+This data contains crime statistics for all 158 neighborhoods of Toronto. The 158 neighbourhood model for the city was adopted fairly recently, as it was brought into use in April 2022 [@torneighbourhoods], compared to the 140 neighbourhood model, which had been devised in 1990s and brought into use in the early 2000s.
 
-# Discussion
+The data includes counts for individual occurence for each category of crime - assault, auto theft, break and entering, robbery, homicide, theft over (\$5000), shooting and firearm discharges. The data also includes the crime rate for each of these categories, calculated as crimes committed per 100,000 population (following the standard definition of crime rate set by Statistics Canada). These crime rates were calculated using population estimates for each neighborhood in 2023, which were provided by Environics Analytics. Both the individual crime occurences as well as crime rates have been given for the year 2014 to 2023, where each year gets its own column [@crimedata].
 
-## First discussion point {#sec-first-point}
+```{r}
+#| echo: false
+#| message: false
+#| label: sample_assault_data
+#| tbl-cap: Sample of assault count and assault rate arranged according to years
+data_snippet <- cleaned_data[1:3, c("assault_2022", "assault_2023", "assault_rate_2014", "assault_rate_2015")]
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this.
+#Kable Ref: https://github.com/christina-wei/INF3104-1-Covid-Clinics/blob/main/outputs/paper/covid_clinics.qmd
+data_snippet |>
+  kable(
+    booktabs = TRUE
+  )
+```
 
-## Second discussion point
+Note that our purposes, we only need to study violent crimes, i.e., assault, robbery, homicide and shootings - other categories of crime as well as population estimates were not used in this paper.
 
-## Third discussion point
+The data also contained geographical geometry of each neighbourhood, described with a set of coordinates. This information was not used for our analysis.
 
-## Weaknesses and next steps
+## Data Quality {#subsec-data-quality}
 
-Weaknesses and next steps should also be included.
+According to the dataset's entry on Open Data Toronto, the data was last updated on 14 January 2024, which means we are working with the latest possible data for crime in the city of Toronto.
+
+The metadata for the dataset is sufficient - the dataset description on the portal along with the column headers describe the data well.
+
+In terms of completeness, even though the score on the Open Data Portal gives the dataset a 100% score for completeness, there are some missing entries for some statistics for certain neighbourhoods. Such values are treated as zeroes for our purposes. One of the reasons for this missing data might be the age of the new neighbourhood division system, as explained above.
+
+# Results {#sec-results}
+
+For our analysis, we will primarily be using vertical box plots to plot our data, as it gives us a clear view of how different crime rates are distributed amongst the neighbourhoods of Toronto.
+
+The top whisker (slim black line) of our box plot represents the top 25% of our data, and the bottom whisker represents the bottom 25% of the data. The black line inside the box of the plots represents the median of the data. The top segment of the box represents the top 50% to top 75% of our data, whereas the bottom segment of the box represents the bottom 25% to the bottom 50% of our data.
+## Assault Rates {#subsec-results-assault}
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: assault_dist_years
+num_assault <- cleaned_data |> select(contains("assault_rate_2"))
+headers <- as.character(2014:2023)
+names(num_assault) <- headers
+num_assault <- melt(num_assault)
+ggplot(num_assault, aes(x=variable, y=value)) +
+    geom_boxplot(outlier.shape = NA) +
+    xlab("Year") +
+    ylab("Assaults / 100,000 population") +
+    ylim(0,300) +
+    ggtitle(wrapper("Distribution of assault rates across all neighbourhoods per year", width=60)) +
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+          axis.title = element_text(size=10))
+```
+
+From the box plots, we can observe the median and notice a trend line which suggests that assaults were trending up until 2020, after which the median values started dropping. Also notice that up until 2022, the distribution of assault rates have been relatively normal as the box plots have been fairly symmetrical. Also notice the huge variance in all of the years up until 2022, some neighbourhoods of Toronto experience a lot more assaults per capita than others. However, in 2023, we see that this distributions skews heavily to the right, indicating extremely large outliers in the data. Also notice that the bottom whisker is considerably shorter, and that the bottom 50% of the data doesn't deviate much from the median.
+
+From these box plots we can deduce that in 2023, even though the median assault rate had decreased, a lot of neighbourhoods experienced a lot more assaults than they would have in the previous years. This could be explained by the dramatic increase in hate crime, upwards of 42%, in Toronto, as reported by CP24 [@hatecrimenews].
+
+## Robbery Rates {#subsec-results-robbery}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: robbery_dist_years
+num_robbery <- cleaned_data |> select(contains("robbery_rate_2"))
+headers <- as.character(2014:2023)
+names(num_robbery) <- headers
+num_robbery <- melt(num_robbery)
+ggplot(num_robbery, aes(x=variable, y=value)) +
+    geom_boxplot(outlier.shape = NA) +
+    xlab("Year") +
+    ylab("Robberies / 100,000 population") +
+    ylim(0,60) +
+    ggtitle(wrapper("Distribution of robbery rates across all neighbourhoods per year", width=60)) +
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+          axis.title = element_text(size=10))
+```
+Similar to assaults, we can see that throughout the years, robbery rates are fairly normally distributed and that there is large variance in amongst the neighbourhoods. Top 25% of the neighbourhoods have a robbbery rate as high as 50-60%, whereas the bottom 25% go as low as 0 robberies. Such a high variance is indicative of massive differences amongst neighbourhoods of Toronto - not all neighbourhoods experience the same level of robberies. Notice that this is where the similarities end.
+
+Everything is not the same between the two crimes. Notice that the median doesn't show a strong trend in either direction, it hovers around 40 robberies / 100,000 population. Also notice that in 2023, there isn't a huge change in the shape of the boxplot - the distribution stays relatively similar to past years.
+
+This shows that there hasn't been a huge change in robbery rates across neighbourhoods over the years - it has stayed stagnant for about a decade.
+
+## Homicide Rates {#subsec-results-homicide}
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: homicide_dist_years
+num_homicide <- cleaned_data |> select(contains("homicide_rate_2"))
+headers <- as.character(2014:2023)
+names(num_homicide) <- headers
+num_homicide <- melt(num_homicide)
+ggplot(num_homicide, aes(x=variable, y=value)) +
+    geom_boxplot(outlier.shape = NA) +
+    xlab("Year") +
+    ylab("Homicides / 100,000 population") +
+    ylim(NA, 20) +
+    ggtitle(wrapper("Distribution of homicide rates across all neighbourhoods per year", width=60)) +
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+          axis.title = element_text(size=10))
+```
+
+Homicides have historically been low in Toronto, as we can see from this graph, with the median homicides sitting at approximately 0 per 100,000 population. From the box plots we can see that about 50% of Toronto's neighbourhoods have  experienced little to no homicides for the last decade. Even in 2018, when Toronto broke a homicide record of 27 years with 96 homicides [@torontoshootings], we see no deviation from the median, only an increase in the maximum (as indicated by the top whisker), indicating that majority of these homicides happen in a small number of neighbourhoods.
+
+Supporting this idea, notice that the top 25% of homicide rates sit extremely far from this median, ranging from 5 to 10 homicides for the last 10 years. This is a significant portion of the Toronto's neighbourhoods which experience very high rates of homicide every year, and there isn't any indication of this changing for the better or for the worse. 
+
+From this, we can conclude that for the last ten years, a small portion, about 25%, of Toronto's neighbourhoods experience a majority of the homicides reported in the city. The rest experience little to no homicides at all.
+
+## Shooting Rates {#subsec-results-shooting}
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: shooting_dist_years
+num_shooting <- cleaned_data |> select(contains("shooting_rate_2"))
+headers <- as.character(2014:2023)
+names(num_shooting) <- headers
+num_shooting <- melt(num_shooting)
+ggplot(num_shooting, aes(x=variable, y=value)) +
+    geom_boxplot(outlier.shape = NA) +
+    xlab("Year") +
+    ylab("Shootings / 100,000 population") +
+    ylim(0,12) +
+    ggtitle(wrapper("Distribution of shooting rates across all neighbourhoods per year", width=60)) +
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+          axis.title = element_text(size=10))
+```
+
+An interesting observation we can make is that up until 2017, the shooting rate distributions heavily resemble the distributions of homicide rates in the city. We can observe from the plots that up until 2017, about 50% of the neighbourhoods experienced little to no shootings at all and those which did showed huge variances in shooting rates, indicating large outliers. Notice that the median value spikes suddenly in 2018, which was Toronto's deadliest year in recorded history [@torontoshootings]. From this point on, the median returns to historical lows only once, in 2021, presumably from the COVID lockdowns that were put in place, which kept most people in their homes - it hovers near the high of 2018 for the rest of the years. Moreover, right after 2021, the median jumps back to the highs of pre-COVID years of 2018 and 2019. Notice that we do observe a noticeable drop in 2023, however, the shooting rate is still far away from what it used to be a decade ago. Also notice that nothing changes for the top 25% of neighbourhoods before or after 2017, they show the same trends for the entire decade. 
+
+From these distributions, we can conclude that up until 2017, about 50% of the neighbourhoods of Toronto experienced little to no shootings, and a large number of shootings occurred in only a few neighbourhoods. Most of the city was largely sheltered from gun violence up until 2017,after which only 25% of the neighbourhoods remained sheltered. More of the city was exposed to gun violence, as the neighbourhoods which stand in the first quartile (bottom 25% to 50%) are now experience some levels of gun violence which they didn't before. Meanwhile, the neighbourhoods which experience the most gun violence haven't shown any positive or negative trends - they've been experiencing the same levels ov violence for over a decade now, with no signs of improvement in the future.
 
 \newpage
 

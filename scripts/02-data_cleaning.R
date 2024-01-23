@@ -19,11 +19,10 @@ raw_data <- read_csv("inputs/data/unedited_data.csv")
 # Ref: https://stackoverflow.com/a/46243006
 cleaned_data <- raw_data |>
   janitor::clean_names() |> 
-  select(contains(c("id","area_name", "assault", "robbery", "homicide", "shooting"))) |>
-  select(-contains(c("hood", "_2014", "_2015","_2016","_2017","_2018","_2019"))) |>
-  select(order(colnames(cleaned_data))) |>
-  mutate_if(is.numeric, funs(ifelse(is.na(.), 0, .))) |>
-  relocate(id, area_name)
+  select(id,area_name, contains(c("assault", "robbery", "homicide", "shooting"))) |>
+  # select(-contains(c("_2014", "_2015","_2016","_2017","_2018","_2019"))) |>
+  # select(order(colnames(cleaned_data))) |>
+  mutate_if(is.numeric, funs(ifelse(is.na(.), 0, .)))
 
 #### Save data ####
 write_csv(cleaned_data, "outputs/data/cleaned_data.csv")

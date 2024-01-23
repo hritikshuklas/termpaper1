@@ -7,9 +7,10 @@
 
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
 
 #### Simulate data ####
+set.seed(42)
+
 # Each crime rate is listed as crimes recorded per 100,000 people
 num_neighbourhoods <- 158
 simulated_data <- 
