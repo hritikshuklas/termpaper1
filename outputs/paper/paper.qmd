@@ -94,7 +94,8 @@ The top whisker (slim black line) of our box plot represents the top 25% of our 
 #| echo: false
 #| message: false
 #| warning: false
-#| label: assault_dist_years
+#| label: assault_rate_dist
+#| fig-cap: Assault Rate distribution in Toronto Neighbourhoods over the years
 num_assault <- cleaned_data |> select(contains("assault_rate_2"))
 headers <- as.character(2014:2023)
 names(num_assault) <- headers
@@ -118,7 +119,8 @@ From these box plots we can deduce that in 2023, even though the median assault 
 #| echo: false
 #| message: false
 #| warning: false
-#| label: robbery_dist_years
+#| label: robbery_rate_dist
+#| fig-cap: Robbery Rate distribution in Toronto Neighbourhoods over the years
 num_robbery <- cleaned_data |> select(contains("robbery_rate_2"))
 headers <- as.character(2014:2023)
 names(num_robbery) <- headers
@@ -144,7 +146,8 @@ This shows that there hasn't been a huge change in robbery rates across neighbou
 #| echo: false
 #| message: false
 #| warning: false
-#| label: homicide_dist_years
+#| label: homicide_rate_dist
+#| fig-cap: Homicide Rate distribution in Toronto Neighbourhoods over the years
 num_homicide <- cleaned_data |> select(contains("homicide_rate_2"))
 headers <- as.character(2014:2023)
 names(num_homicide) <- headers
@@ -171,7 +174,8 @@ From this, we can conclude that for the last ten years, a small portion, about 2
 #| echo: false
 #| message: false
 #| warning: false
-#| label: shooting_dist_years
+#| label: shooting_rate_dist
+#| fig-cap: Shooting Rate distribution in Toronto Neighbourhoods over the years
 num_shooting <- cleaned_data |> select(contains("shooting_rate_2"))
 headers <- as.character(2014:2023)
 names(num_shooting) <- headers

@@ -1,10 +1,8 @@
-# Starter folder
+# Analyzing Violent Crime Statistics in TorontoNeighbourhoods
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+The City of Toronto has made crime statistics for each of its neighbourhoods publicly available through it's Open Data Program. This data will be analyzed to observe how violent crime rates are distributed amongst the neighbourhoods of the city. A trend has been observed where a small number of neighbourhoods exhibit a larger crime rate than the majority of other neighbourhoods. However, these distributions vary from crime to crime.
 
 ## File Structure
 
