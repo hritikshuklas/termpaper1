@@ -88,14 +88,15 @@ In terms of completeness, even though the score on the Open Data Portal gives th
 For our analysis, we will primarily be using vertical box plots to plot our data, as it gives us a clear view of how different crime rates are distributed amongst the neighbourhoods of Toronto.
 
 The top whisker (slim black line) of our box plot represents the top 25% of our data, and the bottom whisker represents the bottom 25% of the data. The black line inside the box of the plots represents the median of the data. The top segment of the box represents the top 50% to top 75% of our data, whereas the bottom segment of the box represents the bottom 25% to the bottom 50% of our data.
+
 ## Assault Rates {#subsec-results-assault}
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-#| label: assault_rate_dist
-#| fig-cap: Assault Rate distribution in Toronto Neighbourhoods over the years
+#| label: fig-assault_rate_dist
+#| fig-cap: Box plots of assault rate distribution in Toronto Neighbourhoods over the years
 num_assault <- cleaned_data |> select(contains("assault_rate_2"))
 headers <- as.character(2014:2023)
 names(num_assault) <- headers
@@ -110,17 +111,17 @@ ggplot(num_assault, aes(x=variable, y=value)) +
           axis.title = element_text(size=10))
 ```
 
-From the box plots, we can observe the median and notice a trend line which suggests that assaults were trending up until 2020, after which the median values started dropping. Also notice that up until 2022, the distribution of assault rates have been relatively normal as the box plots have been fairly symmetrical. Also notice the huge variance in all of the years up until 2022, some neighbourhoods of Toronto experience a lot more assaults per capita than others. However, in 2023, we see that this distributions skews heavily to the right, indicating extremely large outliers in the data. Also notice that the bottom whisker is considerably shorter, and that the bottom 50% of the data doesn't deviate much from the median.
+In @fig-assault_rate_dist we can observe the median, depicted by the line in the center of the box plot, and notice a trend line which suggests that assaults were trending up until 2020, after which the median values started dropping. Also notice that up until 2022, the distribution of assault rates have been relatively normal as the box plots have been fairly symmetrical. Also notice the huge variance in all of the years up until 2022, some neighbourhoods of Toronto experience a lot more assaults per capita than others. However, in 2023, we see that this distributions skews heavily to the right, indicating extremely large outliers in the data. Also notice that the bottom whisker is considerably shorter, and that the bottom 50% of the data doesn't deviate much from the median.
 
-From these box plots we can deduce that in 2023, even though the median assault rate had decreased, a lot of neighbourhoods experienced a lot more assaults than they would have in the previous years. This could be explained by the dramatic increase in hate crime, upwards of 42%, in Toronto, as reported by CP24 [@hatecrimenews].
+From @fig-assault_rate_dist we can deduce that in 2023, even though the median assault rate had decreased, a lot of neighbourhoods experienced a lot more assaults than they would have in the previous years. This could be explained by the dramatic increase in hate crime, upwards of 42%, in Toronto, as reported by CP24 [@hatecrimenews].
 
 ## Robbery Rates {#subsec-results-robbery}
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-#| label: robbery_rate_dist
-#| fig-cap: Robbery Rate distribution in Toronto Neighbourhoods over the years
+#| label: fig-robbery_rate_dist
+#| fig-cap: Box plots of robbery rate distribution in Toronto Neighbourhoods over the years
 num_robbery <- cleaned_data |> select(contains("robbery_rate_2"))
 headers <- as.character(2014:2023)
 names(num_robbery) <- headers
@@ -134,7 +135,7 @@ ggplot(num_robbery, aes(x=variable, y=value)) +
     theme(plot.title = element_text(size=12, hjust = 0.5),
           axis.title = element_text(size=10))
 ```
-Similar to assaults, we can see that throughout the years, robbery rates are fairly normally distributed and that there is large variance in amongst the neighbourhoods. Top 25% of the neighbourhoods have a robbbery rate as high as 50-60%, whereas the bottom 25% go as low as 0 robberies. Such a high variance is indicative of massive differences amongst neighbourhoods of Toronto - not all neighbourhoods experience the same level of robberies. Notice that this is where the similarities end.
+Similar to assaults, in @fig-robbery_rate_dist, we can see that throughout the years, robbery rates are fairly normally distributed and that there is large variance in amongst the neighbourhoods. Top 25% of the neighbourhoods have a robbbery rate as high as 50-60%, whereas the bottom 25% go as low as 0 robberies. Such a high variance is indicative of massive differences amongst neighbourhoods of Toronto - not all neighbourhoods experience the same level of robberies. Notice that this is where the similarities end.
 
 Everything is not the same between the two crimes. Notice that the median doesn't show a strong trend in either direction, it hovers around 40 robberies / 100,000 population. Also notice that in 2023, there isn't a huge change in the shape of the boxplot - the distribution stays relatively similar to past years.
 
@@ -146,7 +147,7 @@ This shows that there hasn't been a huge change in robbery rates across neighbou
 #| echo: false
 #| message: false
 #| warning: false
-#| label: homicide_rate_dist
+#| label: fig-homicide_rate_dist
 #| fig-cap: Homicide Rate distribution in Toronto Neighbourhoods over the years
 num_homicide <- cleaned_data |> select(contains("homicide_rate_2"))
 headers <- as.character(2014:2023)
@@ -162,7 +163,7 @@ ggplot(num_homicide, aes(x=variable, y=value)) +
           axis.title = element_text(size=10))
 ```
 
-Homicides have historically been low in Toronto, as we can see from this graph, with the median homicides sitting at approximately 0 per 100,000 population. From the box plots we can see that about 50% of Toronto's neighbourhoods have  experienced little to no homicides for the last decade. Even in 2018, when Toronto broke a homicide record of 27 years with 96 homicides [@torontoshootings], we see no deviation from the median, only an increase in the maximum (as indicated by the top whisker), indicating that majority of these homicides happen in a small number of neighbourhoods.
+Homicides have historically been low in Toronto, as we can see from @fig-homicide_rate_dist, with the median homicides sitting at approximately 0 per 100,000 population. We can also see that about 50% of Toronto's neighbourhoods have  experienced little to no homicides for the last decade. Even in 2018, when Toronto broke a homicide record of 27 years with 96 homicides [@torontoshootings], we see no deviation from the median, only an increase in the maximum (as indicated by the top whisker), indicating that majority of these homicides happen in a small number of neighbourhoods.
 
 Supporting this idea, notice that the top 25% of homicide rates sit extremely far from this median, ranging from 5 to 10 homicides for the last 10 years. This is a significant portion of the Toronto's neighbourhoods which experience very high rates of homicide every year, and there isn't any indication of this changing for the better or for the worse. 
 
@@ -174,8 +175,8 @@ From this, we can conclude that for the last ten years, a small portion, about 2
 #| echo: false
 #| message: false
 #| warning: false
-#| label: shooting_rate_dist
-#| fig-cap: Shooting Rate distribution in Toronto Neighbourhoods over the years
+#| label: fig-shooting_rate_dist
+#| fig-cap: Box plots of shooting rate distribution in Toronto Neighbourhoods over the years
 num_shooting <- cleaned_data |> select(contains("shooting_rate_2"))
 headers <- as.character(2014:2023)
 names(num_shooting) <- headers
@@ -190,9 +191,9 @@ ggplot(num_shooting, aes(x=variable, y=value)) +
           axis.title = element_text(size=10))
 ```
 
-An interesting observation we can make is that up until 2017, the shooting rate distributions heavily resemble the distributions of homicide rates in the city. We can observe from the plots that up until 2017, about 50% of the neighbourhoods experienced little to no shootings at all and those which did showed huge variances in shooting rates, indicating large outliers. Notice that the median value spikes suddenly in 2018, which was Toronto's deadliest year in recorded history [@torontoshootings]. From this point on, the median returns to historical lows only once, in 2021, presumably from the COVID lockdowns that were put in place, which kept most people in their homes - it hovers near the high of 2018 for the rest of the years. Moreover, right after 2021, the median jumps back to the highs of pre-COVID years of 2018 and 2019. Notice that we do observe a noticeable drop in 2023, however, the shooting rate is still far away from what it used to be a decade ago. Also notice that nothing changes for the top 25% of neighbourhoods before or after 2017, they show the same trends for the entire decade. 
+An interesting observation we can make is that up until 2017, the shooting rate distributions heavily resemble the distributions of homicide rates in the city. We can observe from @fig-shooting_rate_dist that up until 2017, about 50% of the neighbourhoods experienced little to no shootings at all and those which did showed huge variances in shooting rates, indicating large outliers. Notice that the median value spikes suddenly in 2018, which was Toronto's deadliest year in recorded history [@torontoshootings]. From this point on, the median returns to historical lows only once, in 2021, presumably from the COVID lockdowns that were put in place, which kept most people in their homes - it hovers near the high of 2018 for the rest of the years. Moreover, right after 2021, the median jumps back to the highs of pre-COVID years of 2018 and 2019. Notice that we do observe a noticeable drop in 2023, however, the shooting rate is still far away from what it used to be a decade ago. Also notice that nothing changes for the top 25% of neighbourhoods before or after 2017, they show the same trends for the entire decade. 
 
-From these distributions, we can conclude that up until 2017, about 50% of the neighbourhoods of Toronto experienced little to no shootings, and a large number of shootings occurred in only a few neighbourhoods. Most of the city was largely sheltered from gun violence up until 2017,after which only 25% of the neighbourhoods remained sheltered. More of the city was exposed to gun violence, as the neighbourhoods which stand in the first quartile (bottom 25% to 50%) are now experience some levels of gun violence which they didn't before. Meanwhile, the neighbourhoods which experience the most gun violence haven't shown any positive or negative trends - they've been experiencing the same levels ov violence for over a decade now, with no signs of improvement in the future.
+From the distributions in @fig-shooting_rate_dist, we can conclude that up until 2017, about 50% of the neighbourhoods of Toronto experienced little to no shootings, and a large number of shootings occurred in only a few neighbourhoods. Most of the city was largely sheltered from gun violence up until 2017,after which only 25% of the neighbourhoods remained sheltered. More of the city was exposed to gun violence, as the neighbourhoods which stand in the first quartile (bottom 25% to 50%) are now experience some levels of gun violence which they didn't before. Meanwhile, the neighbourhoods which experience the most gun violence haven't shown any positive or negative trends - they've been experiencing the same levels of violence for over a decade now, with no signs of improvement in the future.
 
 \newpage
 
