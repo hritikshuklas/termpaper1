@@ -37,7 +37,7 @@ wrapper <- function(x, ...)
 
 # Introduction
 
-While we read about rising and falling crime rates in the cities we live in, we don't know if these crime rates affect every person equally. It could be the case that these crime occurrences are distributed evenly throughout the city, where every person living in different parts of the city has the same probability of being a victim of a crime. However, it could also be the case that not every person will run into these crimes in their day to day life, and this probability will be heavily influenced by where they live. The aim of this paper is to explore if all neighbourhoods of Toronto follow the general trends of rise and fall in violent crimes, or are there variances between neighbourhoods.
+Over the last five years, Toronto has seen a steady rise in homicides [@citynewshomicides], but at the same time gun violence has dropped 30% [@cbcgunviolence]. In 2022, the city saw a 15% increase in its violent crime index, which was more than three times the increase Canada saw nationally [@cp24crimejump]. While we read about rising and falling crime rates in the cities we live in, we don't know if these crime rates affect every person equally. It could be the case that these crime occurrences are distributed evenly throughout the city, where every person living in different parts of the city has the same probability of being a victim of a crime. However, it could also be the case that not every person will run into these crimes in their day to day life, and this probability will be heavily influenced by where they live. The aim of this paper is to explore if all neighbourhoods of Toronto follow the general trends of rise and fall in violent crimes, or are there variances between neighbourhoods.
 
 In the Data @sec-data section of this paper, I will go through the dataset used for this analysis in detail, covering the source of the data, the different features present in the data and the variables of interest to us.
 
@@ -55,12 +55,12 @@ The data used for this paper is published by Toronto Police Services under the O
 
 This data contains crime statistics for all 158 neighborhoods of Toronto. The 158 neighbourhood model for the city was adopted fairly recently, as it was brought into use in April 2022 [@torneighbourhoods], compared to the 140 neighbourhood model, which had been devised in 1990s and brought into use in the early 2000s.
 
-The data includes counts for individual occurence for each category of crime - assault, auto theft, break and entering, robbery, homicide, theft over (\$5000), shooting and firearm discharges. The data also includes the crime rate for each of these categories, calculated as crimes committed per 100,000 population (following the standard definition of crime rate set by Statistics Canada). These crime rates were calculated using population estimates for each neighborhood in 2023, which were provided by Environics Analytics. Both the individual crime occurences as well as crime rates have been given for the year 2014 to 2023, where each year gets its own column [@crimedata].
+The data includes counts for individual occurence for each category of crime - assault, auto theft, break and entering, robbery, homicide, theft over (\$5000), shooting and firearm discharges. The data also includes the crime rate for each of these categories, calculated as crimes committed per 100,000 population (following the standard definition of crime rate set by Statistics Canada). These crime rates were calculated using population estimates for each neighborhood in 2023, which were provided by Environics Analytics. Both the individual crime occurences as well as crime rates have been given for the year 2014 to 2023, where each year gets its own column [@crimedata], as seen in @tbl-sample_assault_data.
 
 ```{r}
 #| echo: false
 #| message: false
-#| label: sample_assault_data
+#| label: tbl-sample_assault_data
 #| tbl-cap: Sample of assault count and assault rate arranged according to years
 data_snippet <- cleaned_data[1:3, c("assault_2022", "assault_2023", "assault_rate_2014", "assault_rate_2015")]
 
@@ -85,10 +85,6 @@ In terms of completeness, even though the score on the Open Data Portal gives th
 
 # Results {#sec-results}
 
-For our analysis, we will primarily be using vertical box plots to plot our data, as it gives us a clear view of how different crime rates are distributed amongst the neighbourhoods of Toronto.
-
-The top whisker (slim black line) of our box plot represents the top 25% of our data, and the bottom whisker represents the bottom 25% of the data. The black line inside the box of the plots represents the median of the data. The top segment of the box represents the top 50% to top 75% of our data, whereas the bottom segment of the box represents the bottom 25% to the bottom 50% of our data.
-
 ## Assault Rates {#subsec-results-assault}
 
 ```{r}
@@ -96,7 +92,7 @@ The top whisker (slim black line) of our box plot represents the top 25% of our 
 #| message: false
 #| warning: false
 #| label: fig-assault_rate_dist
-#| fig-cap: Box plots of assault rate distribution in Toronto Neighbourhoods over the years
+#| fig-cap: Box plots of assault rate distribution in Toronto Neighbourhoods over the years. Median rate for each year is represented by horizontal lines inside the boxes.
 num_assault <- cleaned_data |> select(contains("assault_rate_2"))
 headers <- as.character(2014:2023)
 names(num_assault) <- headers
@@ -121,7 +117,7 @@ From @fig-assault_rate_dist we can deduce that in 2023, even though the median a
 #| message: false
 #| warning: false
 #| label: fig-robbery_rate_dist
-#| fig-cap: Box plots of robbery rate distribution in Toronto Neighbourhoods over the years
+#| fig-cap: Box plots of robbery rate distribution in Toronto Neighbourhoods over the years. Median rate for each year is represented by horizontal lines inside the boxes.
 num_robbery <- cleaned_data |> select(contains("robbery_rate_2"))
 headers <- as.character(2014:2023)
 names(num_robbery) <- headers
@@ -148,7 +144,7 @@ This shows that there hasn't been a huge change in robbery rates across neighbou
 #| message: false
 #| warning: false
 #| label: fig-homicide_rate_dist
-#| fig-cap: Homicide Rate distribution in Toronto Neighbourhoods over the years
+#| fig-cap: Box plots of homicide rate distribution in Toronto Neighbourhoods over the years. Median rate for each year is represented by horizontal lines inside the boxes.
 num_homicide <- cleaned_data |> select(contains("homicide_rate_2"))
 headers <- as.character(2014:2023)
 names(num_homicide) <- headers
@@ -176,7 +172,7 @@ From this, we can conclude that for the last ten years, a small portion, about 2
 #| message: false
 #| warning: false
 #| label: fig-shooting_rate_dist
-#| fig-cap: Box plots of shooting rate distribution in Toronto Neighbourhoods over the years
+#| fig-cap: Box plots of shooting rate distribution in Toronto Neighbourhoods over the years. Median rate for each year is represented by horizontal lines inside the boxes.
 num_shooting <- cleaned_data |> select(contains("shooting_rate_2"))
 headers <- as.character(2014:2023)
 names(num_shooting) <- headers
