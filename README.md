@@ -1,4 +1,4 @@
-# Analyzing Violent Crime Statistics in TorontoNeighbourhoods
+# Analyzing Violent Crime Statistics in Toronto Neighbourhoods
 
 ## Overview
 
